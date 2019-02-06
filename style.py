@@ -4,6 +4,7 @@ import colorsys
 from random import randint
 from math import *
 from PIL import ImageFilter
+import sys
 
 
 class rice:
@@ -39,17 +40,22 @@ class rice:
 
 
 # texture = Image.open("./texture/rice.jpg").crop((0,0,800,536))
-image = Image.open("./in/logan.jpg")
+image = Image.open("./in/" + sys.argv[1])
 # edges = image.filter(ImageFilter.FIND_EDGES)
 
 # tsize = texture.size
 isize = image.size
 
 output = Image.new('RGB', (isize[0]+40, isize[1]+40))
+n = 0
+for i in range(floor(isize[0]*isize[1]/6)):
+	if(i%int(isize[0]*isize[1]/1000) == 0):
+		sys.stdout.write("\b" * (n))
+		x = str(round(100*((6*i)/(isize[0]*isize[1])),1))
+		sys.stdout.write(x)
+		n = len(x)
+		sys.stdout.flush()
 
-for i in range(floor(isize[0]*isize[1]/20)):
-	if(i%int(isize[0]*isize[1]/10000) == 0):
-		print(100*((20*i)/(isize[0]*isize[1])))
 	x = randint(0,isize[0]-1)
 	y = randint(0,isize[1]-1)
 	Rice = rice(image.getpixel((x,y)))
@@ -59,13 +65,13 @@ for i in range(floor(isize[0]*isize[1]/20)):
 		for x11 in range(22):
 			x1 = x11 + 9
 			temp = Rice.image.getpixel((x1,y1))
-			if temp[0] + temp[1] + temp[2] < 100:
+			if temp[0] + temp[1] + temp[2] < 60:
 				continue
 			else:
 				output.putpixel((x+x1,y+y1), temp)
 
 output.show()
-output.save('./out/logan.jpg')
+output.save('./out/' + sys.argv[1])
 # blockSize = 50
 
 # data = image.getdata()
