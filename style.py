@@ -24,10 +24,6 @@ class rice:
 
 
 	def coloringFunction(self, x, y):
-		if(abs(x-20)>self.length/2):
-			return (0,0,0)
-		if(abs(y-20)>self.width/2):
-			return (0,0,0)
 		if(abs(abs(x-20)*abs(x-20) + 16*abs(y-20)*abs(y-20)) > self.length*self.length*0.25):
 			return (0,0,0)
 		if(x >= 12 and x <=28 and abs(y-20-sqrt((100-(x-20)*(x-20))/80))<0.12):
@@ -43,7 +39,7 @@ class rice:
 
 
 # texture = Image.open("./texture/rice.jpg").crop((0,0,800,536))
-image = Image.open("./in/putin.jpg").crop((29,0,829,536))
+image = Image.open("./in/logan.jpg")
 # edges = image.filter(ImageFilter.FIND_EDGES)
 
 # tsize = texture.size
@@ -51,7 +47,9 @@ isize = image.size
 
 output = Image.new('RGB', (isize[0]+40, isize[1]+40))
 
-for i in range(30000):
+for i in range(floor(isize[0]*isize[1]/20)):
+	if(i%int(isize[0]*isize[1]/10000) == 0):
+		print(100*((20*i)/(isize[0]*isize[1])))
 	x = randint(0,isize[0]-1)
 	y = randint(0,isize[1]-1)
 	Rice = rice(image.getpixel((x,y)))
@@ -60,13 +58,14 @@ for i in range(30000):
 		y1 = y11+9
 		for x11 in range(22):
 			x1 = x11 + 9
-			if Rice.image.getpixel((x1,y1))[0] + Rice.image.getpixel((x1,y1))[1] + Rice.image.getpixel((x1,y1))[2] < 100:
+			temp = Rice.image.getpixel((x1,y1))
+			if temp[0] + temp[1] + temp[2] < 100:
 				continue
 			else:
-				output.putpixel((x+x1,y+y1), Rice.image.getpixel((x1,y1)))
+				output.putpixel((x+x1,y+y1), temp)
 
 output.show()
-output.save('./out/putin.jpg')
+output.save('./out/logan.jpg')
 # blockSize = 50
 
 # data = image.getdata()
