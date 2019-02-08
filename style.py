@@ -8,9 +8,9 @@ import sys
 
 
 class rice:
-	def __init__(self, color):
+	def __init__(self, color, angle=randint(0,360)):
 		self.color = color
-		self.angle = randint(0,360)
+		self.angle = angle
 		self.length = 20 + randint(-2,2)
 		self.width = 5 + randint(-1,1)
 		self.image = Image.new('RGB', (40,40))
@@ -35,6 +35,16 @@ class rice:
 			return (int(((216 + randint(-3,3))*self.color[0])//255) ,int(((217 + randint(-3,3))*self.color[1])//255) ,int(((209 + randint(-3,3))*self.color[2])/255))
 
 
+def grad(pixel1, pixel2, pixel3):
+	p1 = (pixel1[0] + pixel1[1] + pixel1[2])/3
+	p2 = (pixel2[0] + pixel2[1] + pixel2[2])/3
+	p3 = (pixel3[0] + pixel3[1] + pixel3[2])/3
+	x = p1-p2
+
+	if(x == 0):
+		return 90
+	y = p1-p3
+	return (atan(y/x)*180/pi)+90
 
 
 
@@ -48,24 +58,28 @@ isize = image.size
 
 output = Image.new('RGB', (isize[0]+40, isize[1]+40))
 n = 0
-for i in range(floor(isize[0]*isize[1]/6)):
+for i in range(floor(isize[0]*isize[1]/16)):
 	if(i%int(isize[0]*isize[1]/1000) == 0):
 		sys.stdout.write("\b" * (n))
-		x = str(round(100*((6*i)/(isize[0]*isize[1])),1))
+		x = str(round(100*((16*i)/(isize[0]*isize[1])),1))
 		sys.stdout.write(x)
 		n = len(x)
 		sys.stdout.flush()
 
 	x = randint(0,isize[0]-1)
 	y = randint(0,isize[1]-1)
-	Rice = rice(image.getpixel((x,y)))
+	temp1 = image.getpixel((x,y))
+	if x == isize[0]-1 or y == isize[1]-1:
+		Rice = rice(temp1)
+	else:
+		Rice = rice(temp1, grad(image.getpixel((x,y)),image.getpixel((x+1,y)),image.getpixel((x,y+1))))
 	Rice.draw()
 	for y11 in range(22):
 		y1 = y11+9
 		for x11 in range(22):
 			x1 = x11 + 9
 			temp = Rice.image.getpixel((x1,y1))
-			if temp[0] + temp[1] + temp[2] < 60:
+			if temp[0] + temp[1] + temp[2] < 40:
 				continue
 			else:
 				output.putpixel((x+x1,y+y1), temp)
